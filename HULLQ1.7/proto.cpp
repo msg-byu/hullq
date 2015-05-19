@@ -3,20 +3,9 @@
 
 proto::proto(string in)
 {
+  //  Its the object that holds data for each prototype read from the input file.
 	string rawdata = in;
 	vector <string> data;
-
-	//POSSIBLE FIX IF WE CANT USE REGEX
-	/*stringstream rawdata, temp;
-	string split1, split2;
-	rawdata << in;
-
-	while (getline(rawdata, split1, ':')){
-		temp << split1;
-		while (getline(temp, split2, ',')){
-			data.push_back(split2);
-		}
-	}*/
 
 	regex e("[^:, ]*");  
 
@@ -29,6 +18,7 @@ proto::proto(string in)
 		}
 		++rit;
 	}
+	// This is how it expects to see input data.
 	//Proto|name|last n-1 points from concentration|enthalpy of formation|entropic temp
 
 	vector<string>::iterator d;
@@ -42,9 +32,7 @@ proto::proto(string in)
 		}
 		else if (*d == "Stoichiometry"){
 			for (int i = 1; i <= n; i++){ 
-			  //	string currentstr = *(d + i);
-			  //	double currentnum = stod(*(d + i));
-				concentration_coordinates.push_back(stod(*(d + i))*100);
+			 concentration_coordinates.push_back(stod(*(d + i))*100);
 			}
 		}
 		else if (*d == "FormEnthalpyAtom"){
@@ -59,17 +47,11 @@ proto::proto(string in)
 		else if (*d == "LDAU2"){
 		  throw invalid_argument("Bad input at line ");
                 }
-
+		// We can add more depending on the type of errors we encounter in generating input file.
 
 	}
 	orig_coor = proto_val();
 	
-	/*
-	for(auto p: orig_coor)
-	  {cout << p << " " ;
-	  }
-	  cout << "\n";*/
-
 }
 
 vector <double> proto::proto_val(){
@@ -100,8 +82,8 @@ string proto::getName(){
 }
 
 string proto::outputVals(bool bt){
+  // To string method to convert protos to strings. set 'bt' to true if you want to display before transformation results else it displays after transformation coordinates. 
   string result;
-  // = "{";
 	if (bt){
 		for (auto elem : orig_coor){
 		  result += to_string(elem);

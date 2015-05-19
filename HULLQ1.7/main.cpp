@@ -7,6 +7,7 @@
 #include "proto_data.h"
 using namespace std;
 
+
 map <string, string> ArgParse(int argc, char* argv[]){
 	//This function builds a map of the arguments from the command line.
 	map <string, string> options;
@@ -33,7 +34,9 @@ map <string, string> ArgParse(int argc, char* argv[]){
 	return options;
 }
 
+
 string outputProto(proto p){
+  // This function is used to output each proto to the final '.out' file.
 	string output;
 	stringstream out;
 	out.setf(ios::scientific);
@@ -46,48 +49,6 @@ string outputProto(proto p){
 
 int main(int argc, char* argv[]){
 	map <string, string> options = ArgParse(argc, argv);
-	/*	cout << "-------------------------\n"
-		 << "     HULLQ\n"
-		 << "-------------------------\n"
-		 << "    Version 1.2\n"	
-		 << "    Created by BYU MSG\n"
-	         << "    Authors: Jacob Hansen, Chandramouli Nyshadham"
-	         << "\n-------------------------\n";
-	*/
-	
-	/*  
-	(1)--------------------------
-	Duke Code (copy data from aflow library) actually we need to rewrite this...
-	-> produces ABC_data.txt where A,B,C are elements in alphabetical order
-	--------------------------
-
-	j	(2)Then parse the ABC_data.txt to look like this:
-	Poto|name|last n-1 points from concentration|enthralpy of formation|entropic temp
-	-also keep track of the total number of lines
-
-	(3)Generate n-Dimentional simplex coordinates. Then change them to concentration space. Collect coordinate data from
-	step (2) and do matrix multiplication with the simplex matrix in concentration space.
-	between step (2) and the beginning of step (3)
-		->outputs concentration_coordinates.in and std.in for qhull.
-
-	(4) Run qhull
-	-> output from qhull using the n option in qhull
-	-> this makes normals.in
-	-> if dimentions = 2 or 3 allow mathematic option and store mathematica file for gnuplot.
-
-	(5) Create the convex hull(c++ object) with normals.in
-	if option -gnu and 2 or 3 dimentions plot using gnuplot.
-
-	(6) Calculate the distance of each structure in concentration_coordinates.in
-	if option -p only calculate the distance to [proto]
-
-	(7) output distances
-	if -o save this output as [ABC_dist.out]
-
-	final output is ABC_dist.out and gnuplot if asked.
-
-	*/
-
 	if (options.count("-h") || options.count("--help")){
 		string helpText = "Usage: hullq -in [infile] [options]"
 			"\n\nElements for the [infile] should only be given in alphabetical order."
@@ -98,20 +59,21 @@ int main(int argc, char* argv[]){
 		        "\n-v Outputs the distances of the vertices of the convex hull to the file VD_[infile].out."
 			"\n-t [tolerance], option to specify tolerance of the distance of a point to the convex hull. If none, gives all points."
 			"\n-gnu, Make the gnu plot of the convex hull."
-			"\n-mat, Gives the mathematica output of the convex hull."
+		        "\n-mat, Gives the mathematica output of the convex hull." 
 		        "\n-gnu, Makes a gnuplot of ternary system. The output will be given as gnu_[infile].pdf"
 			"\n-h or --help, display these options.\n\n";
 		cout << helpText;
 	}
-	else if (options.count("-in"))  {
-	  //	cout << "working...\n";
-
-		
+	else if (options.count("-in"))  { 
+	  // Input file should be formatted as follows: An example
+	  //Proto: T0001.A2BC, Name: Mg2Ni1Ta1, Stoichiometry: 0.5,0.25,0.25, FormEnthalpyAtom: 0.546852, EntropicTemp: -6103.51
+	  //It works only when input line is in the way written above.
 		string infile = options.at("-in");
 		string outfile = (infile.substr(0,infile.size()-3) + ".out");
  
 		double tolerance = -1;
 		if (options.count("-t")){
+		  // Dont bother much about it. We were trying it for testing. 
 			tolerance = stod(options.at("-t"));
 		}
 
@@ -120,6 +82,7 @@ int main(int argc, char* argv[]){
 		vector <proto> myProtos = database.GetProtos();
 	
 		if (options.count("-p")){
+		  // Not required. Used mainly for testing. 
 			string proto = options.at("-p");
 			for (auto p : myProtos){
 				if (p.getProto() == options.at("-p") || p.getName() == options.at("-p")){
@@ -129,11 +92,13 @@ int main(int argc, char* argv[]){
 		}
 
 		if (options.count("-mat")){
+		  // It gives only mathematica input file given by qhull. We still did not implement generating the plot from mathematica in this code. 
 		  string temp = ("cat stdin | ./qhull m >> M_" + outfile);
 		  system(temp.c_str());
 		}		
 
 		if (options.count("-gnu")){
+		  // Generates  gnuplot output. 
 		  bool fixedTolerance = false;
 		  if(tolerance == -1){
 		    tolerance = 0.00005;
@@ -152,6 +117,7 @@ int main(int argc, char* argv[]){
 		}
 
 		if (options.count("-v")){
+		  // Prints out vertices of the convex hull.
 		  ofstream VOut;
 		  string temp;
  		  temp=("VD_" + outfile);
@@ -161,6 +127,7 @@ int main(int argc, char* argv[]){
 		}
 
 		if (options.count("-o")){
+		  // Gives out the output file. If not used it outputs to command line.
 			ofstream OutFile;
 			OutFile.open(outfile);
 			for (auto p : myProtos){
@@ -188,13 +155,12 @@ int main(int argc, char* argv[]){
 		  allPointsOut << p.outputVals(false) << "\n";
 		}
 		allPointsOut.close();
-		//	system("rm stdin");
+
 	} else {
 		cout << "Please specify an input file.\n";
 	}
 
-	
-	//system("pause");
+      
 }
 
 

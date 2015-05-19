@@ -7,24 +7,11 @@ hull::hull()
 void hull::addPlane(plane p){
 	planes.push_back(p);
 }
-/*
-double hull::distanceToHull(point p){
-	//This function calculates distance in the z direction to the convex hull
-	double dist,zHull;
-	dist = DBL_MAX; //I dont like this, but hopefully this is larger than the largest distance we will ever see. 
-	for (auto plane : planes){
-		zHull = plane.findZ(p.getX(),p.getY());
-		if (p.getZ() - zHull <= dist){
-			dist = p.getZ() - zHull;
-		}
-	}
-	return dist;
-}
-*/
+
 
 double hull::findDistance(vector <double> point){
-	// finds the smallest distance from the point to the hull in the enthralpic direction then returns.
-	double distance = 10000000; //needs to be a big number
+	// finds the smallest distance from the point to the hull in the enthalpy direction then returns.
+	double distance = 10000000; //needs to be a big number for initialization.
 	double d = 0;
 	for (auto p : planes){
 		d = p.how_far_from_me(point);
@@ -37,6 +24,7 @@ double hull::findDistance(vector <double> point){
 }
 
 void hull::buildHull(string hullFile){
+  // Builds the convexhull from the normals.in
 	ifstream myFile;
 	myFile.open(hullFile);
 	string token, line;
@@ -56,7 +44,7 @@ void hull::buildHull(string hullFile){
 
 	int n = rawPoints[0];
 	plane myPlane = plane();
-	for (unsigned int i = 2+n; i < rawPoints.size(); i += n){ // we used 5 because this will remove the first plane assuming that this is the plane that caps the convex hull.
+	for (unsigned int i = 2+n; i < rawPoints.size(); i += n){ 
 		for (int j = 0; j < n; j++){
 			myPlane.addCoefficent(rawPoints.at(i+j));
 		}

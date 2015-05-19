@@ -17,17 +17,11 @@ void plane::setNormal(vector <double> newNormal){
 void plane::addCoefficent(double c){
 	normal.push_back(c);
 }
-/*
-double plane::findNormalPoint(point P){
-	double result = normal.back();
-	for (unsigned int i = 0; i < P.size(); i++){
-		result += normal.at(i)*P.at(i);
-	}
-	return result;
-}
-*/
 
-double plane::how_far_from_me(vector <double> point){ // (-d - Sum(Pi*Ci,from i = 0 to i = n-1))/Cn
+
+double plane::how_far_from_me(vector <double> point){ 
+  // This is the logic behind calculating distance. (-d - Sum(Pi*Ci,from i = 0 to i = n-1))/Cn
+  // We used normals.in file for plane equations. 
 	double result = -normal.back();
 	vector <double> myPoint = point;
 	unsigned int c = 0;

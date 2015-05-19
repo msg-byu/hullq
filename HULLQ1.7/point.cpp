@@ -3,6 +3,7 @@
 
 point::point(double X, double Y, double Z)
 {
+  // Holds data for each point.  
 	x = X;
 	y = Y;
 	z = Z;

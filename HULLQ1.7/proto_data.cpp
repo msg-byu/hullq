@@ -2,6 +2,7 @@
 
 proto_data::proto_data(string filename)
 {
+  // Its running all the logic here. 
 
 	int nProtos = createProtos(filename);
 	//	cout << "\nInput file read.\n" << nProtos << " protos were successfully added.\n";
@@ -13,7 +14,8 @@ proto_data::proto_data(string filename)
 	//	cout << "qhull input created.\n";
 	
 	system("rm normals.in");
-	
+	// This is where we want to integrate qhull code to our code. 
+
 	 createQhullInput();
 	string sysCommand = "echo \"" + createQhullInput() + "\" >> stdin";
 	system(sysCommand.c_str()); 
@@ -56,9 +58,8 @@ int proto_data::createProtos(string filename){
 string proto_data::createQhullInput(){
 	//function: creates the stdin file that qhull uses to calculate the normals for the planes in the convex hull.
 	stringstream temp;
-	temp.precision(15);
+	temp.precision(15);  // Always need 15 digit precision to avoid conflicts with qhull. 
 	temp.setf(ios::fixed);
-	//temp.setf(ios::scientific);
 	int n = data_conc_at.at(0).size();
 	int linesKept = 0;
 	for (unsigned int p = 0; p < data_conc_at.size(); p++){
@@ -80,7 +81,8 @@ string proto_data::createQhullInput(){
 }
 
 void proto_data::simplex_transform(){
-
+   // This generates simplex coordinates as per the wikipedia article : http://en.wikipedia.org/wiki/Simplex 
+  // Go to section : Cartesian coordinates for regular n-dimensional simplex in Rn in wiki page. The same logic is implemented here
 
 	double *Simplex_cartesian;
 	double *Simplex_concentration;
@@ -129,7 +131,7 @@ void proto_data::find_dist_to_hull(){
 }
 
 void proto_data::find_vertex_to_hull(){
-	//y Test function that allowed us to check the distances from the qhull verticies to the qhull hull. Answer should be 0.
+	// Test function that allowed us to check the distances from the qhull verticies to the qhull hull. Answer should be 0.
   system("cat stdin | ./qhull p >> vertices.in");  
   stringstream  myVertices;
   double distance;

@@ -1,74 +1,8 @@
 #include "simplex.h"
 
- /*int main ()
-{
-  int n;
-  int row,col;
-  
-  double *Simplex_cartesian;
-  double *Simplex_concentration;
-  double *Trans_Mat;
- 
-  cout << "\nProgram for generating Simplex coordinates in cartesian space\n";
-  cout << "Please enter the order n i.e Simplex[n]: n=";
-  cin >> n;
-  cout << "\nThe value entered is " << n;
-  cout << "\nThank you";
-    
-  Simplex_cartesian=Simplex_Cart_Coord(n);
-
-  cout << "\nSimplex coordinates in cartesian space are  note: {Vectors are coloumns of matrix}\n";
-  for ( col = 0; col < n+1; col++ )
-    {   cout << "{ ";
-      for ( row = 0; row < n; row++ )
-	{
-	  cout <<  Simplex_cartesian[row+col*n];
-            
-	  if(row<n-1) 
-           cout << ",";
-	}	
-      cout << " }\n";
-    }
-
-  cout << "\nSimplex coordinates in concentration space are note: {Vectors are coloumns of matrix}\n";
-
-  Simplex_concentration=Simplex_Conc_Coord(Simplex_cartesian,n);
-
-  for ( col = 0; col < n+1; col++ )
-    {   cout << "{ ";
-      for ( row = 0; row < n; row++ )
-        {
-          cout <<  Simplex_concentration[row+col*n];
-
-          if(row<n-1)
-	    cout << ",";
-        }
-      cout << " }\n";
-    }
-
-  cout << "\n The transformation matrix is note: {Vectors are coloumns of matrix} : \n";
-
-  Trans_Mat=Transformation_Matrix(Simplex_concentration,n);
-
-  for ( col = 0; col < n+1; col++ )
-    {   cout << "{ ";
-      for ( row = 0; row < n+1; row++ )
-        {
-          cout <<  Trans_Mat[row+col*(n+1)];
-
-          if(row<n)
-            cout << ",";
-        }
-      cout << " }\n";
-    }
-  system("pause");m
-}*/ 
-
-
-
 double *Simplex_Cart_Coord ( int n )
 {
-
+  // These generate the simplex coordinates in cartesian space.
   int row,col;
   int var1,var2,var3;
   double sum,dot_sum;
@@ -107,6 +41,9 @@ double *Simplex_Cart_Coord ( int n )
 double *Simplex_Conc_Coord (double *Mat_Sim_Cart,int n)
 
 {
+
+  // Converts the simplex coordinates from cartesian to concentration space.
+
   int row,col;
   double sum_squared;
   double *Mat_Conc;
@@ -132,7 +69,7 @@ double *Simplex_Conc_Coord (double *Mat_Sim_Cart,int n)
 	Mat_Conc[row+col*n]=Mat_Conc[row+col*n]/ sqrt (sum_squared);
     }
 
-  // I'm adding few lines to solve this gnuplot problems                                                                                                                                     
+   // I'm adding few lines to solve this gnuplot problems. WE can change it later.                                                                                                                                      
   if(n==2)
     {
       Mat_Conc[0]=0;

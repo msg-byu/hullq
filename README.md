@@ -26,7 +26,7 @@ Let us first execute the code and get a feel for it.
 3.  (Remember this code is specially designed for plotting converxhulls of ternary systems) This code needs input in the format of ternary system as the folders are wriiten in AFLOWLIB.
     ex: AlCoW_pv -- we need to give W_pv not just W. So You need to know what subshells are considered p or s for an element when AFLOW is picking them up from VASP POTCAR files.
 4.  Go ahead and write down an input in test_inp file : ex: AlCoW_pv , and save it.
-5.  Execute exe_hullq:   ./exe_hullq   (See if the bash is executable or do chmod +x exe_hullq and then execute it)
+5.  Execute exe_hullq:   `./exe_hullq`   (See if the bash is executable or do chmod +x exe_hullq and then execute it)
 6.  Wait for 3-4 minutes. Make sure your internet connection is good. It takes time for the code to collect data from AFLOWLIB. There are so many structures there.
 7.  Neglect any errors such as Unary operator expected.. There is nothing wrong with the code. It just says some labels in AFLOWLIB does not have any data. 
 8.  Once the executable finishes. Type in ls.

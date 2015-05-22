@@ -1,0 +1,312 @@
+#!/bin/bash
+
+SERVER='http://aflowlib.duke.edu'
+PROJECT3='AFLOWDATA/LIB3_RAW/'
+PROJECT2='AFLOWDATA/LIB2_RAW/'
+
+
+
+FILE=getDataFromAflowlib.txt
+
+
+while read line;do
+
+alloy_name=$line
+
+URL=$SERVER'/'$PROJECT3$alloy_name'/'     
+IFS=','
+
+AURL=$(wget -q -O - ${URL}?aurl);   # AURL gets you to the alloy
+
+
+for key in $(wget -q -O - ${URL}?aflowlib_entries);    # keys are the different prototypes
+do
+    getStoichiometry='http://'${AURL}'/'${key}'/?stoichiometry'
+
+var=0
+for i in $(wget -q -O - ${getStoichiometry}) 
+do
+((var++))
+if [ $var -eq 1 ]; then
+conc_ele1=$i
+fi
+if [ $var -eq 2 ]; then
+conc_ele2=$i
+fi
+if [ $var -eq 3 ]; then
+conc_ele3=$i
+var=0
+fi
+done
+
+    getEnthalpyFormationAtom='http://'${AURL}'/'${key}'/?enthalpy_formation_atom'
+    enthalpyFormationAtom=$(wget -q -O - ${getEnthalpyFormationAtom})
+    
+    getEntropicTemperature='http://'${AURL}'/'${key}'/?entropic_temperature'
+    entropicTemperature=$(wget -q -O - ${getEntropicTemperature})
+
+    getCompoundName='http://'${AURL}'/'${key}'/?compound'
+    compoundName=$(wget -q -O - ${getCompoundName})
+
+
+limit=-1.0    # These limits are to make sure there is no wierd input from AFLOWLIB for any structure like Be2Zn. (MAx set now in 1 eV) 
+badinp=$(echo "$enthalpyFormationAtom>$limit" | bc)
+
+
+
+if [ $badinp -eq 1 ] ; then 
+    echo  Proto: $key, Name: $compoundName, Stoichiometry: $conc_ele1,$conc_ele2,$conc_ele3, FormEnthalpyAtom: $enthalpyFormationAtom, EntropicTemp: $entropicTemperature  >> output
+fi
+
+# we have to write this otherwise the previous values are written
+conc_ele1=0
+conc_ele2=0
+conc_ele3=0
+
+enthalpyFormationAtom=Null
+entropicTemperature=Null
+compoundName=Null
+
+
+done
+
+echo Data Extracted from LIB3....
+
+#rm species_tmp1
+
+    getSpecies='http://'${AURL}'/'${key}'/?species_pp'
+    echo $(wget -q -O - ${getSpecies}) >> species_tmp1
+
+# The code I'm writing here works only for terenary alloy.
+
+unset IFS     # This is super important
+
+var=0    # 'var' is a local variable.
+
+for i in $(cat species_tmp1)
+do
+((var++))
+if [ $var -eq 1 ]; then
+ele1=$i
+fi
+if [ $var -eq 2 ]; then
+ele2=$i
+fi
+if [ $var -eq 3 ]; then
+ele3=$i
+var=0
+fi
+done     # until here I got all the elements details. 
+
+echo Species Info: $ele1, $ele2, $ele3  ::  $ele1$ele2$ele3
+
+# Now I need to get data from LIB2 for all binary alloys.
+# Note: All elements given in alphabetical order as per aflow.
+
+##  Binary combination 1
+
+
+URL=$SERVER'/'$PROJECT2$ele1$ele2'/'
+
+IFS=','    # Remember I have to reset IFS here again.
+
+AURL=$(wget -q -O - ${URL}?aurl);   # AURL gets you to the alloy                                                                                                         
+
+for key in $(wget -q -O - ${URL}?aflowlib_entries);    # keys are the different prototypes                                                                           
+do
+
+
+getNSpecies='http://'${AURL}'/'${key}'/?nspecies'
+
+if [ $(wget -q -O - ${getNSpecies}) -eq 2 ]; then
+
+
+    getStoichiometry='http://'${AURL}'/'${key}'/?stoichiometry'
+#    stoichiometry=$(#wget -q -O - ${getStoichiometry})
+
+var=0
+for i in $(wget -q -O - ${getStoichiometry})
+do
+((var++))
+if [ $var -eq 1 ]; then
+conc_ele1=$i
+fi
+if [ $var -eq 2 ]; then
+conc_ele2=$i
+var=0
+fi
+done
+
+    getEnthalpyFormationAtom='http://'${AURL}'/'${key}'/?enthalpy_formation_atom'
+    enthalpyFormationAtom=$(wget -q -O - ${getEnthalpyFormationAtom})
+
+    getEntropicTemperature='http://'${AURL}'/'${key}'/?entropic_temperature'
+    entropicTemperature=$(wget -q -O - ${getEntropicTemperature})
+
+    getCompoundName='http://'${AURL}'/'${key}'/?compound'
+    compoundName=$(wget -q -O - ${getCompoundName})
+
+limit=-1.0
+badinp=$(echo "$enthalpyFormationAtom>$limit" | bc)
+
+if [ $badinp -eq 1 ] ; then
+    echo  Proto: $key, Name: $compoundName, Stoichiometry: $conc_ele1,$conc_ele2,$conc_ele3, FormEnthalpyAtom: $enthalpyFormationAtom, EntropicTemp: $entropicTemperature  >> output
+fi
+
+#    echo  Proto: $key, Name: $compoundName, Stoichiometry: $conc_ele1,$conc_ele2,0, FormEnthalpyAtom: $enthalpyFormationAtom, EntropicTemp: $entropicTemperature >> output
+
+conc_ele1=0
+conc_ele2=0
+conc_ele3=0
+
+enthalpyFormationAtom=Null
+entropicTemperature=Null
+compoundName=Null
+
+else
+echo error at proto $key >> ErrorLog
+
+fi    # This fi is for nspecies
+
+done
+
+echo Data Extracted for First Binary combination....
+
+##  Binary combination 2
+
+URL=$SERVER'/'$PROJECT2$ele1$ele3'/'
+
+
+
+AURL=$(wget -q -O - ${URL}?aurl);   # AURL gets you to the alloy                                                                                                         
+for key in $(wget -q -O - ${URL}?aflowlib_entries);    # keys are the different prototypes                                                                          
+do
+
+getNSpecies='http://'${AURL}'/'${key}'/?nspecies'
+
+if [ $(wget -q -O - ${getNSpecies}) -eq 2 ]; then
+
+    getStoichiometry='http://'${AURL}'/'${key}'/?stoichiometry'
+#    stoichiometry=$(#wget -q -O - ${getStoichiometry})
+
+var=0
+for i in $(wget -q -O - ${getStoichiometry})
+do
+((var++))
+if [ $var -eq 1 ]; then
+conc_ele1=$i
+fi
+if [ $var -eq 2 ]; then
+conc_ele3=$i
+var=0
+fi
+done
+
+
+    getEnthalpyFormationAtom='http://'${AURL}'/'${key}'/?enthalpy_formation_atom'
+    enthalpyFormationAtom=$(wget -q -O - ${getEnthalpyFormationAtom})
+
+    getEntropicTemperature='http://'${AURL}'/'${key}'/?entropic_temperature'
+    entropicTemperature=$(wget -q -O - ${getEntropicTemperature})
+
+    getCompoundName='http://'${AURL}'/'${key}'/?compound'
+    compoundName=$(wget -q -O - ${getCompoundName})
+ 
+
+limit=-1.0
+badinp=$(echo "$enthalpyFormationAtom>$limit" | bc)
+
+if [ $badinp -eq 1 ] ; then
+    echo  Proto: $key, Name: $compoundName, Stoichiometry: $conc_ele1,$conc_ele2,$conc_ele3, FormEnthalpyAtom: $enthalpyFormationAtom, EntropicTemp: $entropicTemperature  >> output
+fi
+
+#   echo  Proto: $key, Name: $compoundName, Stoichiometry: $conc_ele1,0,$conc_ele3, FormEnthalpyAtom: $enthalpyFormationAtom, EntropicTemp: $entropicTemperature >> output       
+
+conc_ele1=0
+conc_ele2=0
+conc_ele3=0
+
+enthalpyFormationAtom=Null
+entropicTemperature=Null
+compoundName=Null
+
+else
+echo error at proto $key >> ErrorLog
+
+fi
+
+done
+
+echo Data Extracted for Second Binary combination....
+
+##  Binary combination 3      
+
+URL=$SERVER'/'$PROJECT2$ele2$ele3'/'
+AURL=$(wget -q -O - ${URL}?aurl);   # AURL gets you to the alloy                                                                                                         
+for key in $(wget -q -O - ${URL}?aflowlib_entries);    # keys are the different prototypes                                                                             
+do
+
+getNSpecies='http://'${AURL}'/'${key}'/?nspecies'
+
+if [ $(wget -q -O - ${getNSpecies}) -eq 2 ]; then
+
+
+
+    getStoichiometry='http://'${AURL}'/'${key}'/?stoichiometry'
+#    stoichiometry=$(wget -q -O - ${getStoichiometry})
+
+var=0
+for i in $(wget -q -O - ${getStoichiometry})
+do
+((var++))
+if [ $var -eq 1 ]; then
+conc_ele2=$i
+fi
+if [ $var -eq 2 ]; then
+conc_ele3=$i
+var=0
+fi
+done
+
+
+    getEnthalpyFormationAtom='http://'${AURL}'/'${key}'/?enthalpy_formation_atom'
+    enthalpyFormationAtom=$(wget -q -O - ${getEnthalpyFormationAtom})
+
+    getEntropicTemperature='http://'${AURL}'/'${key}'/?entropic_temperature'
+    entropicTemperature=$(wget -q -O - ${getEntropicTemperature})
+
+    getCompoundName='http://'${AURL}'/'${key}'/?compound'
+    compoundName=$(wget -q -O - ${getCompoundName})
+
+
+limit=-1.0
+badinp=$(echo "$enthalpyFormationAtom>$limit" | bc)
+
+if [ $badinp -eq 1 ] ; then
+    echo  Proto: $key, Name: $compoundName, Stoichiometry: $conc_ele1,$conc_ele2,$conc_ele3, FormEnthalpyAtom: $enthalpyFormationAtom, EntropicTemp: $entropicTemperature  >> output
+fi
+#    echo  Proto: $key, Name: $compoundName, Stoichiometry: 0,$conc_ele2,$conc_ele3, FormEnthalpyAtom: $enthalpyFormationAtom, EntropicTemp: $entropicTemperature >> output    
+
+conc_ele1=0
+conc_ele2=0
+conc_ele3=0
+
+enthalpyFormationAtom=Null
+entropicTemperature=Null
+compoundName=Null
+
+else
+echo error at proto $key >> ErrorLog
+
+fi
+
+done
+
+echo Data Extracted for Third Binary combination....
+
+
+mv output $ele1$ele2$ele3.in
+
+done < $FILE
+
+

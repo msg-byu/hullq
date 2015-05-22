@@ -47,6 +47,7 @@ proto::proto(string in)
 		else if (*d == "LDAU2"){
 		  throw invalid_argument("Bad input at line ");
                 }
+	
 		// We can add more depending on the type of errors we encounter in generating input file.
 
 	}
@@ -97,11 +98,17 @@ string proto::outputVals(bool bt){
 	}
 	else{
 		for (auto elem : concentration_coordinates){
-			if (elem != concentration_coordinates.front()){
-				result += to_string(elem) + " ";
-			}
+		  result += to_string(elem);
+		  
+		  if (elem != concentration_coordinates.back()){
+                    result += " ";    
+                  }
+		  // if (elem != concentration_coordinates.front()){
+		  //		result += to_string(elem) + " ";
+		  //	}
 		}
-		return result + to_string(enthalpy);
+		return result;   // Note: Mouli commented and modified this part. Its having some errors before to print AT coordinates. Now its fixed.
+		//return result + to_string(enthalpy);
 	}
 }
 

@@ -1,0 +1,81 @@
+#!/bin/bash
+
+#####  THIS CODE WAS WRITTEN BY BYU-MSG  #####
+
+### Date : 21 May 2015
+### Authors and Contribution 
+### Chandramouli Nyshadham : Simplex transformation, REST API, GNUPLOT, and the shell.   
+### Jake Hansen : Data Parsing, Distance to convex hull, C++ code.  
+### Supervisor : Dr. Gus Hart
+
+
+
+FILE=test_inp
+
+while read line;do
+
+
+i=$line
+
+
+mkdir $i
+
+cp hullq1.7 $i/
+cp qhull $i/
+cp getDataFromAFLOWLIB $i/
+cp gnuplot-plot-code $i/plot
+cd $i/
+
+echo $i >> getDataFromAflowlib.txt
+
+./getDataFromAFLOWLIB
+
+
+./hullq1.7 -in $i.in -o -mat -gnu -v  >> terminalOut
+
+sed -e $'s/Polygon/\\\n/g' -e  's/}/ /g' -e 's/{/ /g' -e 's/,/ /g' -e 's/]/ /g' -e 's/\[/ /g' M_$i.out >> polyinGNU
+
+IFS=" "
+
+var=0
+
+for j in $(cat species_tmp1)
+do
+
+((var++))
+if [ $var -eq 1 ]; then
+sed -i '' 's/ELE1/'$j'/g' plot
+fi
+
+if [ $var -eq 2 ]; then
+sed -i '' 's/ELE2/'$j'/g' plot
+fi
+
+if [ $var -eq 3 ]; then
+sed -i '' 's/ELE3/'$j'/g' plot
+fi
+
+done
+
+rm triPoints
+
+echo 0.000000000000000 0.000000000000000 0   >> triPoints
+echo 50.000000000000000 86.602540378443862 0  >> triPoints
+echo 100.000000000000000 0.000000000000000 0  >> triPoints
+echo 0.000000000000000 0.000000000000000 0   >> triPoints
+
+
+sed -i '' 's/gnuOut/'gnu_$i.out'/g' plot
+sed -i '' 's/phase_dig.eps/'phaseDig_$i.eps'/g' plot
+
+gnuplot plot
+
+
+rm hullq1.7 qhull 
+rm getDataFromAFLOWLIB  
+rm VD_$i.out
+
+echo  Convexhull for system $i is plotted successfully.  
+cd ..
+
+done < $FILE

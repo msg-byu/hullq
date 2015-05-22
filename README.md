@@ -1,6 +1,7 @@
 
-#######This Readme file gives an overview on Hullq code written at BYU by Material Simulation Group (MSG).#######
-####This readme is written by Chandramouli Nyshadham. You can mail me for any doubts you have executing this code. (nycmouli@gmail.com)######
+###This Readme file gives an overview on Hullq code written at BYU by Material Simulation Group (MSG).###
+
+#This readme is written by Chandramouli Nyshadham. You can mail me for any doubts you have executing this code. (nycmouli@gmail.com)#
 
 
   

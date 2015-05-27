@@ -18,7 +18,9 @@ while read line;do
 i=$line
 
 
-mkdir $i
+mkdir $i    # Creating a directory with the alloy name.
+
+# Copying executables needed. Check readme for knowing the purpose of each executable.
 
 cp hullq1.7 $i/
 cp qhull $i/
@@ -26,15 +28,18 @@ cp getDataFromAFLOWLIB $i/
 cp gnuplot-plot-code $i/plot
 cd $i/
 
-echo $i >> getDataFromAflowlib.txt
+echo $i >> getDataFromAflowlib.txt       # This is input file for getDataFromAFLOWLIB executable.
 
-./getDataFromAFLOWLIB
+./getDataFromAFLOWLIB  
 
 
-./hullq1.7 -in $i.in -o -mat -gnu -v  >> terminalOut
+./hullq1.7 -in $i.in -o -mat -gnu -v  >> terminalOut     # Executing hullq code. The arguments are discussed in hullq source code.
 
-sed -e $'s/Polygon/\\\n/g' -e  's/}/ /g' -e 's/{/ /g' -e 's/,/ /g' -e 's/]/ /g' -e 's/\[/ /g' M_$i.out >> polyinGNU
+# Modifying the mathematica output of qhull to generate input for gnuplot.
 
+sed -e $'s/Polygon/\\\n/g' -e  's/}/ /g' -e 's/{/ /g' -e 's/,/ /g' -e 's/]/ /g' -e 's/\[/ /g' M_$i.out >> polyinGNU  
+
+# This is internal field seperator to read the species file
 IFS=" "
 
 var=0
@@ -57,6 +62,7 @@ fi
 
 done
 
+# These are the three points of triangle in ternary phase diagram plot.
 rm triPoints
 
 echo 0.000000000000000 0.000000000000000 0   >> triPoints
@@ -64,12 +70,16 @@ echo 50.000000000000000 86.602540378443862 0  >> triPoints
 echo 100.000000000000000 0.000000000000000 0  >> triPoints
 echo 0.000000000000000 0.000000000000000 0   >> triPoints
 
+# Modifying names for convenience.
 
 sed -i '' 's/gnuOut/'gnu_$i.out'/g' plot
-sed -i '' 's/phase_dig.eps/'phaseDig_$i.eps'/g' plot
+sed -i '' 's/phase_diag.eps/'phaseDiag_$i.eps'/g' plot
+
+# gnuplotting
 
 gnuplot plot
 
+# deleting the executtaables. Clean up. Save space.
 
 rm hullq1.7 qhull 
 rm getDataFromAFLOWLIB  

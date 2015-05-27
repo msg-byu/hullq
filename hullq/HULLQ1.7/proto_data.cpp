@@ -65,7 +65,7 @@ string proto_data::createQhullInput(){
 	for (unsigned int p = 0; p < data_conc_at.size(); p++){
 		vector<double> current = data_conc_at.at(p);
 		database.at(p).setVals(current);
-		if (current.back() <= 0){
+		if (current.back() <= 0){    // We want only negative enthalpies in stdin file. 
 			vector<double>::iterator elem;
 			for (elem = current.begin(); elem != current.end(); elem++){
 				double currentnum = *elem;
@@ -74,7 +74,7 @@ string proto_data::createQhullInput(){
 
 			}
 			temp << "\n";
-			linesKept++;
+			linesKept++;   // this keeps track of number of lines in stdin file
 		}
 	}
 	return to_string(n) + "\n" + to_string(linesKept + n) + "\n" + firstPlane(n-1) + temp.str(); 

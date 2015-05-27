@@ -1,9 +1,13 @@
 #!/bin/bash
 
+## This code is written based on the reference paper mentioned below. 
+## Taylor, Richard H., et al. "A RESTful API for exchanging Materials Data in the AFLOWLIB. org consortium." Computational Materials Science 93 (2014): 178-192.
+## There is an example code mentioned in the paper. It is better to read the paper first and then this code. It helps you understand the code easier, faster and better. 
+
+
 SERVER='http://aflowlib.duke.edu'
 PROJECT3='AFLOWDATA/LIB3_RAW/'
 PROJECT2='AFLOWDATA/LIB2_RAW/'
-
 
 
 FILE=getDataFromAflowlib.txt
@@ -49,7 +53,11 @@ done
     compoundName=$(wget -q -O - ${getCompoundName})
 
 
-limit=-1.0    # These limits are to make sure there is no wierd input from AFLOWLIB for any structure like Be2Zn. (MAx set now in 1 eV) 
+limit=-1.0    
+
+# These limits are to make sure there is no wierd input from AFLOWLIB for any structure like Be2Zn. (Max set now in 1 eV) 
+# Refer this paper to know more about the error: 
+
 badinp=$(echo "$enthalpyFormationAtom>$limit" | bc)
 
 

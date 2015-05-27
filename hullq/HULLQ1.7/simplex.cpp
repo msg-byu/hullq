@@ -69,7 +69,11 @@ double *Simplex_Conc_Coord (double *Mat_Sim_Cart,int n)
 	Mat_Conc[row+col*n]=Mat_Conc[row+col*n]/ sqrt (sum_squared);
     }
 
-   // I'm adding few lines to solve this gnuplot problems. WE can change it later.                                                                                                                                      
+   // I'm adding few lines to solve this gnuplot problems. WE can change it later.                                                                     
+
+
+
+  /*
   if(n==2)
     {
       Mat_Conc[0]=0;
@@ -79,6 +83,7 @@ double *Simplex_Conc_Coord (double *Mat_Sim_Cart,int n)
       Mat_Conc[4]=1;
       Mat_Conc[5]=0;
     }
+  */
 
   return Mat_Conc;
   

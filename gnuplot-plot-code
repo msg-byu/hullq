@@ -3,7 +3,7 @@ set terminal postscript landscape color "Helvetica" 17
 
 set output "phase_diag.eps"
 
-set title "Ternary Phase Digram  [ELE1 ELE2 ELE3]"
+set title "Ternary Phase Digram  [Co Mn_pv Pt]"
 
 
 set key off
@@ -24,8 +24,8 @@ set style line 1 lt 3 lw 2 pt 3 ps 1
 set style line 2 lt 1 lw 4 pt 3 ps 1
 
 
-plot "polyinGNU" u ((-sqrt(3)/2 * $1)-($2/2)):((sqrt(3)/2 * $2)-($1/2)) w lp ls 1,"tripoints" u 1:2 w lp ls 2,"gnuOut" u ((-sqrt(3)/2 * $3)-($4/2)):((sqrt(3)/2 * $4)-($3/2)):2 w labels font "Helvetica,12" offset 0,-0.5 center, "gnuOut" u ((-sqrt(3)/2 * $3)-($4/2)):((sqrt(3)/2 * $4)-($3/2)):(sprintf("%d meV",$5)) w labels font "Helvetica,8" offset 0,-1 center
 
+plot "polyinGNU" u 1:2 w lp ls 1,"tripoints" u 1:2 w lp ls 2,  "gnuOut" u 3:4:2 w labels font "Helvetica,12" offset 0,-0.5 center, "gnuOut" u 3:4:(sprintf("%d meV",$5)) w labels font "Helvetica,8" offset 0,-1 center;
 
 
 !ps2pdf phase_diag.eps && rm phase_diag.eps

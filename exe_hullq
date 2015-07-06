@@ -22,7 +22,7 @@ mkdir $i    # Creating a directory with the alloy name.
 
 # Copying executables needed. Check readme for knowing the purpose of each executable.
 
-cp hullq1.7 $i/
+cp hullq1.8 $i/
 cp qhull $i/
 cp getDataFromAFLOWLIB $i/
 cp gnuplot-plot-code $i/plot
@@ -33,7 +33,7 @@ echo $i >> getDataFromAflowlib.txt       # This is input file for getDataFromAFL
 ./getDataFromAFLOWLIB  
 
 
-./hullq1.7 -in $i.in -o -mat -gnu -v  >> terminalOut     # Executing hullq code. The arguments are discussed in hullq source code.
+./hullq1.8 -in $i.in -o -mat -gnu -v  >> terminalOut     # Executing hullq code. The arguments are discussed in hullq source code.
 
 # Modifying the mathematica output of qhull to generate input for gnuplot.
 
@@ -81,7 +81,7 @@ gnuplot plot
 
 # deleting the executtaables. Clean up. Save space.
 
-rm hullq1.7 qhull 
+rm hullq1.8 qhull 
 rm getDataFromAFLOWLIB  
 rm VD_$i.out
 

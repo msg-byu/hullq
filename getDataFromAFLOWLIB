@@ -57,6 +57,7 @@ limit=-1.0
 
 # These limits are to make sure there is no wierd input from AFLOWLIB for any structure like Be2Zn. (Max set now in 1 eV) 
 # Refer this paper to know more about the error: 
+# Richard H. Taylor, Stefano Curtarolo, and Gus L. W. Hart Phys. Rev. B 84, 084101 – Published 19 August 2011
 
 badinp=$(echo "$enthalpyFormationAtom>$limit" | bc)
 
@@ -66,7 +67,7 @@ if [ $badinp -eq 1 ] ; then
     echo  Proto: $key, Name: $compoundName, Stoichiometry: $conc_ele1,$conc_ele2,$conc_ele3, FormEnthalpyAtom: $enthalpyFormationAtom, EntropicTemp: $entropicTemperature  >> output
 fi
 
-# we have to write this otherwise the previous values are written
+# we have to write this to reset values, otherwise the previous values are written
 conc_ele1=0
 conc_ele2=0
 conc_ele3=0
@@ -87,7 +88,7 @@ echo Data Extracted from LIB3....
 
 # The code I'm writing here works only for terenary alloy.
 
-unset IFS     # This is super important
+unset IFS     # This is super important. Read the RESTAPI paper. You will understand it.
 
 var=0    # 'var' is a local variable.
 
@@ -110,6 +111,7 @@ echo Species Info: $ele1, $ele2, $ele3  ::  $ele1$ele2$ele3
 
 # Now I need to get data from LIB2 for all binary alloys.
 # Note: All elements given in alphabetical order as per aflow.
+# Similar procedure as above is followed. 
 
 ##  Binary combination 1
 

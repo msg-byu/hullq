@@ -40,11 +40,16 @@ Go ahead and write down an input in test\_inp file:
 ex: AlCoW\_pv , and save it (I have already written the example input in test\_inp file).
 
 
-Note: Make sure that the `hullq1.7` and `qhull` are executable on your computer, otherwise the code won't run. In case if your compiler is not able to execute the files, you need to make your own executables. Do it the following way:
+Note: Make sure that the `hullq1.8` and `qhull` are executable on your computer, otherwise the code won't run. In case if your compiler is not able to execute the files, you need to make your own executables. Do it the following way:
+
 1. Go to ~/hullq/hullq/HULLQ1.8/ folder and compile the c++ code with your g++ compiler. Here is the command in case you need `g++ -std=c++11 -o hullq1.8 *.cpp`
+
 2. Copy the `hullq1.8` into the main hulq folder.
+
 3. To get the qhull executable, go to: http://www.qhull.org/download/   and download the qhull code for unix and compile it as per their guidelines to get the `qhull` executable. 
+
 4. Copy the `qhull` executable to the main folder. 
+
 5. You are all set. 
 
 Execute exe_hullq: `./exe_hullq` (See if the bash is executable or do `chmod +x exe_hullq` and then execute it)

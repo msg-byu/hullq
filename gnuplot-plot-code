@@ -3,7 +3,7 @@ set terminal postscript landscape color "Helvetica" 17
 
 set output "phase_diag.eps"
 
-set title "Ternary Phase Digram  [Co Mn_pv Pt]"
+set title "Ternary Phase Digram  [ELE1 ELE2 ELE3]"
 
 
 set key off
